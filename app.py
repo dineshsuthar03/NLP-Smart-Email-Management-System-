@@ -3,6 +3,7 @@ from src.summarization import Summarizer
 from src.spam_detection import SpamDetector
 from src.ner import NamedEntityRecognizer
 import os
+from flask_cors import CORS  # Import CORS
 
 # Initialize the components
 summarizer = Summarizer()
@@ -11,6 +12,8 @@ import joblib
 
 # Initialize Flask app
 app = Flask(__name__)
+# Enable CORS for all routes
+CORS(app)
 
 # Load the model (including the fitted vectorizer)
 spam_detector = SpamDetector()
@@ -26,10 +29,12 @@ def detect_spam():
     text = data.get('text', '')
     
     try:
-        # Assuming the SpamDetector's predict method returns a dictionary with a key 'isSpam'
+        # Predict using SpamDetector
         result = spam_detector.predict(text)
-        # Send the result back in a structured format
-        return jsonify({"isSpam": result['isSpam']}), 200
+        if isinstance(result, dict) and 'isSpam' in result:
+            return jsonify({"isSpam": result['isSpam']}), 200
+        else:
+            raise ValueError("Unexpected result format from SpamDetector")
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
