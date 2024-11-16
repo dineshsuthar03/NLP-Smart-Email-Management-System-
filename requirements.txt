@@ -5,3 +5,4 @@ spacy
 pandas 
 flask
 numpy
+flask-cors
