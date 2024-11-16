@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Demo | Interactive Text Analysis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #818cf8;
+            --background-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --border-radius: 12px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 4rem 0;
+            margin-bottom: 2rem;
+            color: white;
+            text-align: center;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #fff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .nav-tabs {
+            border: none;
+            justify-content: center;
+            gap: 1rem;
+            padding: 0 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .nav-link {
+            border: none !important;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius) !important;
+            font-weight: 600;
+            color: var(--text-color) !important;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background-color: #f1f5f9;
+        }
+
+        .nav-link.active {
+            background-color: var(--primary-color) !important;
+            color: white !important;
+        }
+
+        .tab-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .tab-pane {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-pane h3 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            resize: vertical;
+            margin-bottom: 1rem;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        .result {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .example {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f1f5f9;
+            border-radius: var(--border-radius);
+            border: 1px solid #e2e8f0;
+        }
+
+        .example h5 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .example p {
+            margin-bottom: 0.5rem;
+            color: #64748b;
+        }
+
+        footer {
+            background: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 2rem 0;
+            }
+
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .nav-link {
+                padding: 0.75rem 1.25rem;
+            }
+
+            .tab-pane {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <div class="container">
+            <h1>Text Analysis API Demo</h1>
+            <p>Explore our powerful text analysis tools for spam detection, summarization, and named entity recognition.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <ul class="nav nav-tabs" id="apiTabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" id="spam-tab" data-bs-toggle="tab" data-bs-target="#spam" type="button" role="tab" aria-controls="spam" aria-selected="true">
+                    Spam Detection
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="summarization-tab" data-bs-toggle="tab" data-bs-target="#summarization" type="button" role="tab" aria-controls="summarization" aria-selected="false">
+                    Summarization
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="ner-tab" data-bs-toggle="tab" data-bs-target="#ner" type="button" role="tab" aria-controls="ner" aria-selected="false">
+                    Named Entities
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="spam" role="tabpanel" aria-labelledby="spam-tab">
+                <h3>Spam Detection</h3>
+                <textarea id="spam-input" placeholder="Enter your text here to check for spam content..."></textarea>
+                <button onclick="detectSpam()">Analyze Text</button>
+                <div class="result" id="spam-result">Results will appear here...</div>
+                <div class="example">
+                    <h5>Example Inputs</h5>
+                    <p>"Congratulations! You've won a free gift card worth $1000! Click here to claim now!"</p>
+                    <p>"Hi Sarah, can we schedule a team meeting for next Tuesday at 2 PM?"</p>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="summarization" role="tabpanel" aria-labelledby="summarization-tab">
+                <h3>Text Summarization</h3>
+                <textarea id="summarization-input" placeholder="Enter a long text passage for summarization..."></textarea>
+                <button onclick="summarizeText()">Generate Summary</button>
+                <div class="result" id="summarization-result">Summary will appear here...</div>
+                <div class="example">
+                    <h5>Example Input</h5>
+                    <p>"The quick brown fox jumps over the lazy dog. The fox, known for its agility and cleverness, has been observed performing such feats in various locations. The dog, despite its apparent laziness, maintains a watchful eye on its surroundings."</p>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="ner" role="tabpanel" aria-labelledby="ner-tab">
+                <h3>Named Entity Recognition</h3>
+                <textarea id="ner-input" placeholder="Enter text to identify named entities (people, organizations, locations, etc.)..."></textarea>
+                <button onclick="recognizeEntities()">Identify Entities</button>
+                <div class="result" id="ner-result">Identified entities will appear here...</div>
+                <div class="example">
+                    <h5>Example Input</h5>
+                    <p>"Microsoft CEO Satya Nadella announced new AI initiatives during a conference in New York City last week."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Text Analysis API Demo. All Rights Reserved.</p>
+        </div>
+        <div style="font-family: Arial, sans-serif; text-align: center; margin-top: 20px; color: #333; font-size: 14px;">
+            Created with <span style="color: black;">❤️</span> by 
+            <a href="https://dineshsuthar.com" style="color: black; text-decoration: none; font-weight: bold;" target="_blank">dineshsuthar.com</a>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Function to detect spam
+        function detectSpam() {
+            const text = document.getElementById('spam-input').value;
+            const result = document.getElementById('spam-result');
+            
+            // API URL for Spam Detection
+            const apiUrl = 'http://127.0.0.1:5000/detect_spam';
+            
+            // Making the API call
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: text })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Check if 'result' exists in the API response
+                if (data.result !== undefined) {
+                    result.innerHTML = `<strong>Analysis Result:</strong><br>Spam detected: ${data.result ? 'Yes' : 'No'}<br><br><em>(API Response)</em>`;
+                } else {
+                    result.innerHTML = `<strong>Error:</strong><br>Unable to determine spam status.<br><br><em>(Error)</em>`;
+                }
+            })
+            .catch(error => {
+                result.innerHTML = `<strong>Error:</strong><br>Unable to process your request.<br><br><em>(Error)</em>`;
+                console.error('Error:', error);
+            });
+        }
+    
+        // Function to summarize text
+        function summarizeText() {
+            const text = document.getElementById('summarization-input').value;
+            const result = document.getElementById('summarization-result');
+            
+            // API URL for Text Summarization
+            const apiUrl = 'http://127.0.0.1:5000/summarize';
+            
+            // Making the API call
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: text })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Check if 'summary' exists in the API response
+                if (data.summary) {
+                    result.innerHTML = `<strong>Summary:</strong><br>${data.summary}<br><br><em>(API Response)</em>`;
+                } else {
+                    result.innerHTML = `<strong>Error:</strong><br>Unable to summarize text.<br><br><em>(Error)</em>`;
+                }
+            })
+            .catch(error => {
+                result.innerHTML = `<strong>Error:</strong><br>Unable to process your request.<br><br><em>(Error)</em>`;
+                console.error('Error:', error);
+            });
+        }
+    
+        // Function to recognize named entities
+        function recognizeEntities() {
+            const text = document.getElementById('ner-input').value;
+            const result = document.getElementById('ner-result');
+            
+            // API URL for Named Entity Recognition
+            const apiUrl = 'http://127.0.0.1:5000/ner';
+            
+            // Making the API call
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: text })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Check if 'entities' exists in the API response
+                if (data.entities && data.entities.length > 0) {
+                    const entities = data.entities.join(', ');
+                    result.innerHTML = `<strong>Identified Entities:</strong><br>${entities}<br><br><em>(API Response)</em>`;
+                } else {
+                    result.innerHTML = `<strong>Error:</strong><br>No entities found.<br><br><em>(Error)</em>`;
+                }
+            })
+            .catch(error => {
+                result.innerHTML = `<strong>Error:</strong><br>Unable to process your request.<br><br><em>(Error)</em>`;
+                console.error('Error:', error);
+            });
+        }
+    </script>
+    
+</body>
+</html>
+
+
+
+
+
+
+
+
+
