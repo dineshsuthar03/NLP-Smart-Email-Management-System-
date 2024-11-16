@@ -2,6 +2,15 @@
 
 A sophisticated email management solution powered by AI to intelligently handle, categorize, and analyze emails using advanced NLP techniques.
 
+## Screenshots
+
+Here are some screenshots of the project:
+
+![Screenshot of the app](./screenshot/smart-email-mgmt-system.png)
+
+Another image:
+
+![Another screenshot](./screenshots/image2.png)
 ## 🌟 Overview
 
 Smart Email Management System is an intelligent email processing platform that leverages natural language processing (NLP) to automate email workflow management. The system provides powerful features including spam detection, email summarization, and entity recognition to help users efficiently manage their email communications.
