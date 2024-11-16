@@ -87,8 +87,8 @@ class SpamDetector:
         # Make a prediction
         prediction = self.model.predict(text_vec)
 
-        # Return a structured result as a dictionary
-        return {"isSpam": prediction[0] == 1}
+        # Return a structured result as a dictionary with the boolean converted to int
+        return {"isSpam": int(prediction[0] == 1)}  # Convert the boolean to int (1 or 0)
 
 
 # Example usage

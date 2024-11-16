@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Demo | Interactive Text Analysis</title>
+    <title>Smart Email Management System | Interactive Text Analysis</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <style>
         :root {
@@ -274,9 +274,10 @@
             })
             .then(response => response.json())
             .then(data => {
-                // Check if 'result' exists in the API response
-                if (data.result !== undefined) {
-                    result.innerHTML = `<strong>Analysis Result:</strong><br>Spam detected: ${data.result ? 'Yes' : 'No'}<br><br><em>(API Response)</em>`;
+                console.log(data);
+                // Check if 'isSpam' exists in the API response
+                if (data.isSpam !== undefined) {
+                    result.innerHTML = `<strong>Analysis Result:</strong><br>Spam detected: ${data.isSpam === 1 ? 'Yes' : 'No'}<br><br><em>(API Response)</em>`;
                 } else {
                     result.innerHTML = `<strong>Error:</strong><br>Unable to determine spam status.<br><br><em>(Error)</em>`;
                 }
